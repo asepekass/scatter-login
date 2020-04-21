@@ -1,0 +1,49 @@
+<div id="login"><button onclick="login();">Please Login</button></div>
+		<div id="gotin" style="display:none;">
+			Welcome <b><span id="user"></span></b>
+			<br>
+			<button id="logout" onclick="logout();">Logout</button>
+		</div>
+
+ScatterJS.plugins( Vexanium() );
+const fromDappBrowser = navigator.userAgent=='VexWalletAndroid';		
+const appname = document.title;
+var network = ScatterJS.Network.fromJson({
+			blockchain: bc('vex'),
+			chainId:'f9f432b1851b5c179d2091a96f593aaed50ec7466b74f89301f957a83e56ce1f',
+			host:'209.97.162.124',
+			port:8080,
+			protocol:'http'
+		});
+		
+		var logButt = document.getElementById('login');
+		var gotin = document.getElementById('gotin');
+		var usrTxt = document.getElementById('user');
+		login();
+
+		function login() {
+			try(!fromDappBrowser){
+				ScatterJS.connect(appname,{network}).then(connected => {
+					if(!connected) {
+						alert('Please Open Your VexWallet');
+						return;
+					}
+					ScatterJS.login().then(id => {
+						if(!id) return;
+						logButt.style = 'display:none;';
+						gotin.style = 'display:block;';
+						usrTxt.innerHTML = id.accounts[0].name;
+					});
+				});
+			} catch (e) {
+				console.log(e);
+			}
+		}
+		
+function logout() {
+try{
+if(!fromDappBrowser){
+			ScatterJS.logout();
+			gotin.style = 'display:none;';
+			logButt.style = 'display:block;';
+		}
